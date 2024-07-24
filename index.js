@@ -7,7 +7,10 @@ document.querySelector(".fileinput").addEventListener('change', function(e) {
             let url = URL.createObjectURL(file);
             let mediadiv = document.createElement('div');
             mediadiv.className="col-4 divfix";
-            
+            let checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.className = 'media-checkbox';
+            mediadiv.appendChild(checkbox);
             if(file.type.startsWith('image/')){
              let img=document.createElement('img');
              img.src=url;
@@ -44,7 +47,7 @@ document.querySelector(".fileinput").addEventListener('change', function(e) {
                 contextMenu.dataset.targetId = mediadiv.dataset.id = `mediadiv-${Date.now()}`;
             });
             mediadiv.addEventListener('click', function(event) {
-                if (event.target !== downloadlink) {
+                if (event.target !== downloadlink && event.target!==checkbox) {
                     let modal = document.getElementById("myModal");
                     let modalContent = modal.querySelector('.modal-content');
                     modalContent.innerHTML = ''; 
@@ -103,3 +106,12 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+document.getElementById('deleteSelected').addEventListener('click', function() {
+    let checkboxes = document.querySelectorAll('.media-checkbox:checked');
+    checkboxes.forEach(checkbox => {
+        let mediadiv = checkbox.closest('.divfix');
+        if (mediadiv) {
+            mediadiv.remove();
+        }
+    });
+});
