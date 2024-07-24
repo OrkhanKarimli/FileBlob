@@ -7,6 +7,7 @@ document.querySelector(".fileinput").addEventListener('change', function(e) {
             let url = URL.createObjectURL(file);
             let mediadiv = document.createElement('div');
             mediadiv.className="col-4 divfix";
+            
             if(file.type.startsWith('image/')){
              let img=document.createElement('img');
              img.src=url;
@@ -42,10 +43,31 @@ document.querySelector(".fileinput").addEventListener('change', function(e) {
                 contextMenu.style.top = `${event.pageY}px`;
                 contextMenu.dataset.targetId = mediadiv.dataset.id = `mediadiv-${Date.now()}`;
             });
-
-            setTimeout(function() {
-                URL.revokeObjectURL(url);
-            }, 5000);
+            mediadiv.addEventListener('click', function(event) {
+                if (event.target !== downloadlink) {
+                    let modal = document.getElementById("myModal");
+                    let modalContent = modal.querySelector('.modal-content');
+                    modalContent.innerHTML = ''; 
+            
+                    let clonedMediaElement;
+                    if (file.type.startsWith('image/')) {
+                        clonedMediaElement = document.createElement('img');
+                    } else if (file.type.startsWith('video/')) {
+                        clonedMediaElement = document.createElement('video');
+                        clonedMediaElement.autoplay = true;
+                        clonedMediaElement.loop = true;
+                    }
+                    clonedMediaElement.src = url;
+                    clonedMediaElement.style.width = '100%';
+                    clonedMediaElement.style.height = '100%';
+                    modalContent.appendChild(clonedMediaElement);
+            
+                    modal.style.display = "flex";
+                }
+            });
+            // setTimeout(function() {
+            //     URL.revokeObjectURL(url);
+            // }, 5000);
         } else {
             alert("Sekil elave et");
         }
@@ -71,3 +93,13 @@ document.addEventListener('click', function(event) {
         contextMenu.style.display = 'none';
     }
 });
+let modal = document.getElementById("myModal");
+let closeBtn = modal.querySelector('.close');
+closeBtn.onclick = function() {
+    modal.style.display = "none";
+}
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
